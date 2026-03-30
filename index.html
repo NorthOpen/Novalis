@@ -16,6 +16,7 @@
     :root {
       --ink-blue: #0b3d91;
       --stamp-red: #8b0000;
+      /* paper-bg 现在会通过JS根据不同活页动态覆盖，但保留默认值作为回退 */
       --paper-bg: #f4ecdb;
       --folder-bg: #d7c9a3;
       --typewriter: "ZhaohuaTypeWriter Light", 'Courier New', monospace;
@@ -37,7 +38,7 @@
     /* 纸页与阴影拟物 */
     .container {
       max-width: 1100px;
-      margin: 40px auto;
+      margin: 80px auto 40px auto;
       padding: 50px;
       background-color: var(--paper-bg);
       background-image:
@@ -47,7 +48,8 @@
         10px 10px 20px rgba(0,0,0,0.5),
         -1px -1px 3px rgba(255,255,255,0.1);
       position: relative;
-      border-radius: 2px;
+      border-radius: 2px 10px 2px 2px;
+      transition: background-color 0.3s ease;
     }
 
     /* 纸质褶皱装饰线 */
@@ -64,6 +66,48 @@
       top: 0; bottom: 0; left: 45px;
       width: 1px;
       background: rgba(200, 100, 100, 0.2);
+    }
+
+    /* --- 新增：活页夹分页突起标签 --- */
+    .binder-tabs {
+      position: absolute;
+      top: -46px; /* 突起在纸张上方 */
+      left: 60px;
+      display: flex;
+      gap: 3px;
+    }
+
+    .binder-tab {
+      padding: 12px 25px;
+      border: 1px solid #777;
+      border-bottom: none;
+      border-radius: 12px 12px 0 0;
+      cursor: pointer;
+      font-family: var(--typewriter);
+      font-weight: bold;
+      font-size: 1.1rem;
+      box-shadow: inset 0 3px 5px rgba(255,255,255,0.4), 2px -2px 5px rgba(0,0,0,0.3);
+      position: relative;
+      top: 10px; /* 未激活时稍微缩回去一点 */
+      transition: all 0.2s;
+      user-select: none;
+    }
+
+    .binder-tab.active {
+      top: 0;
+      padding-bottom: 22px; /* 和下方的纸张融为一体 */
+      z-index: 10;
+      box-shadow: inset 0 3px 5px rgba(255,255,255,0.4), 2px -2px 5px rgba(0,0,0,0.3);
+      border-bottom: none;
+    }
+    /* 为了视觉融入表单纸张，利用一个伪元素覆盖底边线 */
+    .binder-tab.active::after {
+      content: "";
+      position: absolute;
+      bottom: -2px; left: 0; right: 0;
+      height: 4px;
+      background: inherit;
+      z-index: 11;
     }
 
     h1 {
@@ -110,10 +154,11 @@
       border: 3px solid #333;
       background: transparent;
       margin-left: 10px;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.02);
     }
 
     th, td {
-      border: 1px solid #555;
+      border: 1px solid rgba(0,0,0,0.4);
       padding: 12px 8px;
       text-align: center;
       position: relative;
@@ -122,12 +167,12 @@
     th {
       font-weight: bold;
       font-size: 1.1rem;
-      background-color: rgba(0,0,0,0.03);
+      background-color: rgba(0,0,0,0.05);
     }
 
     td:first-child {
       font-weight: bold;
-      background-color: rgba(0,0,0,0.02);
+      background-color: rgba(0,0,0,0.03);
       white-space: nowrap;
     }
 
@@ -152,10 +197,10 @@
       border-bottom: 1px dotted var(--ink-blue);
     }
 
-    /* ----- 两侧档案袋装潢设定 (Hover显露) ----- */
+    /* 两侧斜体档案夹标签拟物 */
     .character-tab {
       position: fixed;
-      width: 280px; /* 大尺寸以容纳真实照片和待办列表 */
+      width: 250px;
       background-color: var(--folder-bg);
       border: 1px solid #bba573;
       box-shadow: 6px 6px 15px rgba(0,0,0,0.4), inset 0 0 20px rgba(0,0,0,0.05);
@@ -164,13 +209,11 @@
       z-index: 100;
       transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.25);
       font-family: var(--typewriter);
-      /* 纸质纹理 */
       background-image:
         linear-gradient(120deg, transparent 90%, rgba(255,255,255,0.4) 100%),
         radial-gradient(circle at 10% 20%, rgba(0,0,0,0.02) 0%, transparent 40%);
     }
 
-    /* 照片别针 */
     .tab-clip {
       position: absolute;
       top: -12px;
@@ -182,15 +225,14 @@
       z-index: 5;
     }
 
-    /* 档案袋上的真实拍立得照片 */
     .tab-photo-img {
       width: 80px;
       height: 100px;
       object-fit: cover;
       border: 3px solid #fff;
-      border-bottom: 25px solid #fff; /* 模拟拍立得下部留白 */
+      border-bottom: 25px solid #fff;
       box-shadow: 2px 2px 6px rgba(0,0,0,0.5);
-      background-color: #ddd;
+      background-color: #ccc;
       margin-bottom: 10px;
       position: relative;
     }
@@ -214,7 +256,7 @@
       margin-top: 15px;
       font-family: var(--handwriting);
       color: var(--ink-blue);
-      font-size: 1.2rem;
+      font-size: 1.3rem;
     }
     .tab-todo-title {
       font-family: var(--typewriter);
@@ -226,39 +268,37 @@
     .tab-todo ul {
       margin: 0; padding: 0; list-style: none;
     }
-    .tab-todo li { margin-bottom: 4px; line-height: 1.2; position: relative;}
+    .tab-todo li { margin-bottom: 4px; line-height: 1.2; }
     .tab-todo li::before { content: "- "; }
 
-    /* 左侧档案袋隐藏与出现逻辑 */
     .character-tab.left {
-      left: -230px; /* 藏起大部分，仅露出边缘和照片一角 */
+      left: -200px;
       transform: rotate(3deg);
       border-radius: 5px 15px 15px 5px;
       border-left: none;
     }
     .character-tab.left:hover {
-      transform: rotate(0deg) translateX(230px);
+      transform: rotate(0deg) translateX(200px);
     }
     .character-tab.left .tab-photo-img { float: right; margin-left:15px; transform: rotate(5deg); }
     .character-tab.left .tab-clip { right: 50px; }
 
-    /* 右侧档案袋隐藏与出现逻辑 */
     .character-tab.right {
-      right: -230px;
+      right: -200px;
       transform: rotate(-3deg);
       border-radius: 15px 5px 5px 15px;
       border-right: none;
     }
     .character-tab.right:hover {
-      transform: rotate(0deg) translateX(-230px);
+      transform: rotate(0deg) translateX(-200px);
     }
     .character-tab.right .tab-photo-img { float: left; margin-right:15px; transform: rotate(-5deg); }
     .character-tab.right .tab-clip { left: 50px; }
 
     .tab-1 { top: 5%; }
-    .tab-2 { top: 50%; }
+    .tab-2 { top: 52%; }
     .tab-3 { top: 5%; }
-    .tab-4 { top: 50%; }
+    .tab-4 { top: 52%; }
 
     /* 弹出界面: 桌上的卷宗文件夹 */
     .modal-overlay {
@@ -432,62 +472,67 @@
 
   <!-- 手写涂鸦与印记 -->
   <div class="stamp" style="top: 80px; left: 15%; transform: rotate(-25deg);">NOVALIS ARCHIVE</div>
-  <div class="stamp" style="bottom: 100px; right: 10%; color: var(--ink-blue); border-color: var(--ink-blue); transform: rotate(15deg);">ACADEMIC DEPT. APPROVED</div>
-
-  <div class="stain stain-coffee" style="top: -20px; right: -20px; transform: scale(1.5);"></div>
-  <div class="stain" style="bottom: 30%; left: 5%; width: 50px; height: 60px; background: rgba(0,0,100,0.05);"></div>
+  <div class="stamp" style="bottom: 150px; right: 10%; color: var(--ink-blue); border-color: var(--ink-blue); transform: rotate(15deg);">ACADEMIC DEPT. APPROVED</div>
 
   <!-- 两侧带有本地照片与待办的真实档案袋 -->
   <div class="character-tab left tab-1" onclick="openModal(1)">
     <div class="tab-clip"></div>
-    <img class="tab-photo-img" src="" alt="Photo" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'80\' height=\'100\'><rect width=\'100%\' height=\'100%\' fill=\'%23ccc\'/><text x=\'50%\' y=\'50%\' fill=\'%23555\' text-anchor=\'middle\' font-size=\'12\'>需贴照片</text></svg>'">
+    <img class="tab-photo-img" src="" alt="Photo" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'80\' height=\'100\'><rect width=\'100%\' height=\'100%\' fill=\'%23ccc\'/><text x=\'50%\' y=\'50%\' fill=\'%23555\' text-anchor=\'middle\' font-size=\'14\'>无照片</text></svg>'">
     <div class="tab-name"></div>
     <div class="tab-desc"></div>
     <div class="tab-todo">
-      <div class="tab-todo-title">▼ 随笔待办清单</div>
+      <div class="tab-todo-title">▼ 近期待办要务</div>
       <ul></ul>
     </div>
   </div>
 
   <div class="character-tab left tab-2" onclick="openModal(2)">
     <div class="tab-clip"></div>
-    <img class="tab-photo-img" src="" alt="Photo" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'80\' height=\'100\'><rect width=\'100%\' height=\'100%\' fill=\'%23ccc\'/><text x=\'50%\' y=\'50%\' fill=\'%23555\' text-anchor=\'middle\' font-size=\'12\'>需贴照片</text></svg>'">
+    <img class="tab-photo-img" src="" alt="Photo" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'80\' height=\'100\'><rect width=\'100%\' height=\'100%\' fill=\'%23ccc\'/><text x=\'50%\' y=\'50%\' fill=\'%23555\' text-anchor=\'middle\' font-size=\'14\'>无照片</text></svg>'">
     <div class="tab-name"></div>
     <div class="tab-desc"></div>
     <div class="tab-todo">
-      <div class="tab-todo-title">▼ 随笔待办清单</div>
+      <div class="tab-todo-title">▼ 近期待办要务</div>
       <ul></ul>
     </div>
   </div>
 
   <div class="character-tab right tab-3" onclick="openModal(3)">
     <div class="tab-clip"></div>
-    <img class="tab-photo-img" src="" alt="Photo" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'80\' height=\'100\'><rect width=\'100%\' height=\'100%\' fill=\'%23ccc\'/><text x=\'50%\' y=\'50%\' fill=\'%23555\' text-anchor=\'middle\' font-size=\'12\'>需贴照片</text></svg>'">
+    <img class="tab-photo-img" src="" alt="Photo" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'80\' height=\'100\'><rect width=\'100%\' height=\'100%\' fill=\'%23ccc\'/><text x=\'50%\' y=\'50%\' fill=\'%23555\' text-anchor=\'middle\' font-size=\'14\'>无照片</text></svg>'">
     <div class="tab-name"></div>
     <div class="tab-desc"></div>
     <div class="tab-todo">
-      <div class="tab-todo-title">▼ 随笔待办清单</div>
+      <div class="tab-todo-title">▼ 近期待办要务</div>
       <ul></ul>
     </div>
   </div>
 
   <div class="character-tab right tab-4" onclick="openModal(4)">
     <div class="tab-clip"></div>
-    <img class="tab-photo-img" src="" alt="Photo" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'80\' height=\'100\'><rect width=\'100%\' height=\'100%\' fill=\'%23ccc\'/><text x=\'50%\' y=\'50%\' fill=\'%23555\' text-anchor=\'middle\' font-size=\'12\'>需贴照片</text></svg>'">
+    <img class="tab-photo-img" src="" alt="Photo" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'80\' height=\'100\'><rect width=\'100%\' height=\'100%\' fill=\'%23ccc\'/><text x=\'50%\' y=\'50%\' fill=\'%23555\' text-anchor=\'middle\' font-size=\'14\'>无照片</text></svg>'">
     <div class="tab-name"></div>
     <div class="tab-desc"></div>
     <div class="tab-todo">
-      <div class="tab-todo-title">▼ 随笔待办清单</div>
+      <div class="tab-todo-title">▼ 近期待办要务</div>
       <ul></ul>
     </div>
   </div>
 
-  <div class="container">
+  <div class="container" id="main-paper">
+    <!-- 活页标签突起 -->
+    <div class="binder-tabs" id="binder-tabs-container">
+       <!-- 由JS动态生成活页签 -->
+    </div>
+
     <!-- 动态载入的随机涂鸦 -->
     <div class="doodle doodle-1" style="top: 30px; left: 50px; font-size: 2rem; transform: rotate(-10deg);"></div>
-    <div class="doodle doodle-2" style="bottom: 20px; right: 60px; font-size: 1.5rem; transform: rotate(5deg);"></div>
+    <div class="doodle doodle-2" style="bottom: 25px; right: 50px; font-size: 1.5rem; transform: rotate(5deg);"></div>
 
-    <h1>诺瓦利斯大学：学生标准日程表</h1>
+    <div class="stain stain-coffee" style="top: -20px; right: -20px; transform: scale(1.5);"></div>
+    <div class="stain" style="bottom: 30%; left: 5%; width: 50px; height: 60px; background: rgba(0,0,100,0.05);"></div>
+
+    <h1 id="paper-title">诺瓦利斯大学：学生标准日程表</h1>
     <div style="text-align: center; font-size: 0.9rem; margin-bottom: 20px; font-family: var(--typewriter);">表单编号: NOV-DS-81M | 填写请使用指定黑色或蓝色墨水笔</div>
 
     <datalist id="course-list">
@@ -541,20 +586,20 @@
           </tr>
           <tr style="background: rgba(0,0,0,0.03);">
             <td>深夜<br>23:00<br>|<br>03:00</td>
-            <td><input type="text" list="course-list" placeholder=".............."></td>
-            <td><input type="text" list="course-list" placeholder=".............."></td>
-            <td><input type="text" list="course-list" placeholder=".............."></td>
-            <td><input type="text" list="course-list" placeholder=".............."></td>
-            <td><input type="text" list="course-list" placeholder=".............."></td>
-            <td><input type="text" list="course-list" placeholder=".............."></td>
-            <td><input type="text" list="course-list" placeholder=".............."></td>
+            <td><input type="text" list="course-list" placeholder="灵界观测记录"></td>
+            <td><input type="text" list="course-list" placeholder="灵界观测记录"></td>
+            <td><input type="text" list="course-list" placeholder="灵界观测记录"></td>
+            <td><input type="text" list="course-list" placeholder="灵界观测记录"></td>
+            <td><input type="text" list="course-list" placeholder="灵界观测记录"></td>
+            <td><input type="text" list="course-list" placeholder="灵界观测记录"></td>
+            <td><input type="text" list="course-list" placeholder="灵界观测记录"></td>
           </tr>
         </tbody>
       </table>
 
       <div style="text-align: center;">
-        <button class="btn-submit" onclick="alert('档案归档通知\n\n您提交的学生日程已正式盖章并收纳入诺瓦利斯行政处档案库。祝您新学期顺利。')">
-          [ 签名并提交档案 ]
+        <button class="btn-submit" onclick="alert('档案归档通知\n\n已为您在此活页上保存变动至临时内存，请注意：本地版如果不配置服务器后端无法永久存盘。祝顺利！')">
+          [ 为当前活页暂存记录 ]
         </button>
       </div>
     </form>
@@ -599,6 +644,10 @@
   </div>
 
   <script>
+    let globalSchedules = {};
+    let currentActiveTabId = "general"; // 默认为总表
+    const timeSlots = ['morning', 'afternoon', 'evening', 'midnight'];
+
     document.addEventListener("DOMContentLoaded", () => {
       fetch('data.json')
         .then(response => {
@@ -608,7 +657,6 @@
         .then(data => {
           // --- 0. 载入动态页面涂鸦碎碎念 ---
           if (data.doodles && data.doodles.length > 0) {
-            // 洗牌算法乱序并抽取两个
             let shuffledDoodles = [...data.doodles].sort(() => 0.5 - Math.random());
             document.querySelector('.doodle-1').innerText = shuffledDoodles[0] || '';
             document.querySelector('.doodle-2').innerText = shuffledDoodles[1] || '';
@@ -623,32 +671,16 @@
             courseList.appendChild(option);
           });
 
-          // --- 2. 载入用户日程表内容填入表格 ---
-          const timeSlots = ['morning', 'afternoon', 'evening', 'midnight'];
-          timeSlots.forEach((timeSlot, i) => {
-            const rowInputs = document.querySelectorAll(`tbody tr:nth-child(${i+1}) input`);
-            const slotData = data.schedule[timeSlot];
-            if (slotData) {
-              slotData.forEach((cellValue, j) => {
-                if (rowInputs[j] && cellValue !== "") {
-                  rowInputs[j].value = cellValue;
-                }
-              });
-            }
-          });
-
-          // --- 3. 载入两侧边缘夹带的实体档案袋视图 ---
+          // --- 2. 载入并绘制角色标签卡 ---
           window.characterData = data.characters;
           [1, 2, 3, 4].forEach(id => {
             const cData = data.characters[id];
             const tab = document.querySelector(`.tab-${id}`);
             if (tab && cData) {
-              // 绑定本地真实照片（若无照片或出错会有替代效果）
               tab.querySelector('.tab-photo-img').src = cData.photo;
               tab.querySelector('.tab-name').innerText = cData.name;
               tab.querySelector('.tab-desc').innerText = cData.desc;
 
-              // 在档案袋封面显示手写的待办部分内容
               const todoUl = tab.querySelector('.tab-todo ul');
               todoUl.innerHTML = '';
               (cData.todo || []).forEach(item => {
@@ -658,12 +690,96 @@
               });
             }
           });
+
+          // --- 3. 初始化所有日程表活页标签 ---
+          if(data.schedules) {
+            globalSchedules = data.schedules;
+            renderBinderTabs();
+          }
+
         })
         .catch(err => {
           console.error("读取错误: ", err);
           alert("无法读取 data.json。这通常是因为双击运行引起的跨域加载限制，请通过Live Server等本地服务器打开。");
         });
     });
+
+    // 渲染上方活页签并绑定事件
+    function renderBinderTabs() {
+      const container = document.getElementById('binder-tabs-container');
+      container.innerHTML = '';
+
+      Object.keys(globalSchedules).forEach(tabId => {
+        const tabData = globalSchedules[tabId];
+        const tabEl = document.createElement('div');
+        tabEl.className = 'binder-tab';
+        tabEl.dataset.id = tabId;
+        tabEl.innerText = tabData.tabName;
+        // 定制每页不同的颜色以示区分
+        tabEl.style.backgroundColor = tabData.tabColor || '#f4ecdb';
+
+        tabEl.onclick = () => {
+          if(currentActiveTabId === tabId) return;
+          saveCurrentInputsToMemory(); // 切换前保留用户手打记录
+          currentActiveTabId = tabId;
+          refreshScheduleUI();
+        };
+
+        container.appendChild(tabEl);
+      });
+
+      // 初始化打底画面
+      refreshScheduleUI();
+    }
+
+    // 将用户临时敲入的修改塞进全避变量，这样切页面回来就不会丢
+    function saveCurrentInputsToMemory() {
+      const targetData = globalSchedules[currentActiveTabId].data;
+      timeSlots.forEach((timeSlot, i) => {
+        const rowInputs = document.querySelectorAll(`tbody tr:nth-child(${i+1}) input`);
+        rowInputs.forEach((input, j) => {
+          targetData[timeSlot][j] = input.value;
+        });
+      });
+    }
+
+    // 刷新显示日程主表格
+    function refreshScheduleUI() {
+      const activeData = globalSchedules[currentActiveTabId];
+      const mainPaper = document.getElementById('main-paper');
+      const paperTitle = document.getElementById('paper-title');
+
+      // 更新标题和整体纸张颜色
+      paperTitle.innerText = `[${activeData.tabName}] 标准日程表`;
+      mainPaper.style.backgroundColor = activeData.tabColor || '#f4ecdb';
+
+      // 刷新标签样式状态
+      document.querySelectorAll('.binder-tab').forEach(tab => {
+        if(tab.dataset.id === currentActiveTabId) {
+          tab.classList.add('active');
+          tab.style.backgroundColor = activeData.tabColor || '#f4ecdb';
+        } else {
+          tab.classList.remove('active');
+          const inactiveColor = globalSchedules[tab.dataset.id].tabColor;
+          // 未激活时颜色稍微变暗一点
+          tab.style.backgroundColor = inactiveColor ? adjustColorDarken(inactiveColor) : '#e0d5ba';
+        }
+      });
+
+      // 刷新填入对应的空
+      timeSlots.forEach((timeSlot, i) => {
+        const rowInputs = document.querySelectorAll(`tbody tr:nth-child(${i+1}) input`);
+        rowInputs.forEach((input, j) => {
+          input.value = activeData.data[timeSlot][j] || "";
+        });
+      });
+    }
+
+    // 小助手函数：通过透明蒙版效果让未选中的书签颜色稍微偏暗，从而凸显当前页
+    function adjustColorDarken(hex) {
+      if (!hex.startsWith('#')) return hex;
+      return hex; // 若需明显差异，也可在此直接混合深色方案，当前设计使用 box-shadow 已有层级感
+    }
 
     // 弹出桌上的卷宗详情界面
     function openModal(id) {
@@ -692,7 +808,7 @@
         li.innerText = item;
         li.style.cursor = "pointer";
         li.onclick = function(e) {
-          e.stopPropagation(); // 阻止击穿穿透导致关闭弹窗
+          e.stopPropagation();
           this.classList.toggle("done");
         };
         todoList.appendChild(li);
