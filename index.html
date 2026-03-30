@@ -155,14 +155,15 @@
       background: transparent;
       margin-left: 10px;
       box-shadow: inset 0 0 10px rgba(0,0,0,0.02);
-      table-layout: fixed; /* 强制表格列宽固定，避免因文字撑开而变形 */
+      table-layout: fixed; /* 强制表格列宽固定，允许长内容分行 */
     }
 
     th, td {
       border: 1px solid rgba(0,0,0,0.4);
-      padding: 12px 4px;
+      padding: 8px 4px;
       text-align: center;
       position: relative;
+      vertical-align: middle;
     }
 
     th {
@@ -177,37 +178,51 @@
       white-space: nowrap;
     }
 
-    /* 手写输入框 - 智能缩小机制 */
-    input {
+    /* --- 手写展示区与编辑框的切换逻辑样式 --- */
+    .cell-display {
+      font-family: var(--handwriting);
+      font-size: 1.2rem;
+      color: var(--ink-blue);
+      min-height: 2em;
+      white-space: pre-wrap; /* 允许自动分行换行 */
+      word-break: break-all;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: text;
+      line-height: 1.2;
+    }
+    .cell-display.empty {
+      font-family: var(--typewriter);
+      color: rgba(0,0,0,0.2);
+      font-size: 0.9rem;
+      letter-spacing: 2px;
+    }
+
+    input.cell-input {
       background: transparent;
       border: none;
       color: var(--ink-blue);
       font-family: var(--handwriting);
-      font-size: 1.4rem;
+      font-size: 1.2rem;
       width: 100%;
       box-sizing: border-box;
       text-align: center;
       letter-spacing: 1px;
-      text-overflow: ellipsis; /* 溢出时显示省略号 */
-      white-space: nowrap;
-      transition: font-size 0.2s, letter-spacing 0.2s; /* 字体缩小的平滑过渡 */
     }
-    input::placeholder {
-      color: rgba(0, 0, 0, 0.2);
-      font-family: var(--typewriter);
-      font-size: 0.9rem;
-      letter-spacing: 2px;
-    }
-    input:focus {
+    input.cell-input:focus {
       outline: none;
       border-bottom: 1px dotted var(--ink-blue);
-      /* 当获取焦点时，如果字太小也可以暂时放大方便修改，或者保持不动 */
+      background: rgba(255,255,255,0.5); /* 稍微提亮输入区域 */
     }
 
     /* 两侧斜体档案夹标签拟物 */
     .character-tab {
       position: fixed;
       width: 250px;
+      max-height: 80vh; /* 限制最大高度，防止待办太多超出屏幕 */
+      overflow-y: auto; /* 允许内部滚动 */
+      scrollbar-width: none; /* 隐藏原生滚动条 (Firefox) */
       background-color: var(--folder-bg);
       border: 1px solid #bba573;
       box-shadow: 6px 6px 15px rgba(0,0,0,0.4), inset 0 0 20px rgba(0,0,0,0.05);
@@ -219,6 +234,9 @@
       background-image:
         linear-gradient(120deg, transparent 90%, rgba(255,255,255,0.4) 100%),
         radial-gradient(circle at 10% 20%, rgba(0,0,0,0.02) 0%, transparent 40%);
+    }
+    .character-tab::-webkit-scrollbar {
+      display: none; /* 隐藏原生滚动条 (Chrome/Safari) */
     }
 
     .tab-clip {
@@ -324,6 +342,9 @@
       padding: 40px;
       width: 650px;
       max-width: 90%;
+      /* 限制最大高度并引入定制化滚动条，防止内容过多溢出窗口 */
+      max-height: 85vh;
+      overflow-y: auto;
       position: relative;
       box-shadow: 15px 15px 30px rgba(0,0,0,0.6);
       border-radius: 5px 10px 10px 5px;
@@ -331,6 +352,10 @@
       background-image:
         radial-gradient(circle at 20% 80%, rgba(0,0,0,0.02) 0%, transparent 40%);
     }
+    /* 美化档案卷宗弹窗的滚动条 */
+    .modal-content::-webkit-scrollbar { width: 8px; }
+    .modal-content::-webkit-scrollbar-thumb { background: #bba573; border-radius: 4px; }
+    .modal-content::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); border-radius: 4px;}
 
     .modal-content::before {
       content: "";
@@ -563,43 +588,43 @@
         <tbody>
           <tr>
             <td>上午<br>08:00<br>|<br>12:00</td>
-            <td><input type="text" list="course-list" placeholder="..............."></td>
-            <td><input type="text" list="course-list" placeholder="..............."></td>
-            <td><input type="text" list="course-list" placeholder="..............."></td>
-            <td><input type="text" list="course-list" placeholder="..............."></td>
-            <td><input type="text" list="course-list" placeholder="..............."></td>
-            <td><input type="text" list="course-list" placeholder="..............."></td>
-            <td><input type="text" list="course-list" placeholder="..............."></td>
+            <td><input type="text" list="course-list" class="cell-input"></td>
+            <td><input type="text" list="course-list" class="cell-input"></td>
+            <td><input type="text" list="course-list" class="cell-input"></td>
+            <td><input type="text" list="course-list" class="cell-input"></td>
+            <td><input type="text" list="course-list" class="cell-input"></td>
+            <td><input type="text" list="course-list" class="cell-input"></td>
+            <td><input type="text" list="course-list" class="cell-input"></td>
           </tr>
           <tr>
             <td>下午<br>14:00<br>|<br>18:00</td>
-            <td><input type="text" list="course-list" placeholder="..............."></td>
-            <td><input type="text" list="course-list" placeholder="..............."></td>
-            <td><input type="text" list="course-list" placeholder="..............."></td>
-            <td><input type="text" list="course-list" placeholder="..............."></td>
-            <td><input type="text" list="course-list" placeholder="..............."></td>
-            <td><input type="text" list="course-list" placeholder="..............."></td>
-            <td><input type="text" list="course-list" placeholder="..............."></td>
+            <td><input type="text" list="course-list" class="cell-input"></td>
+            <td><input type="text" list="course-list" class="cell-input"></td>
+            <td><input type="text" list="course-list" class="cell-input"></td>
+            <td><input type="text" list="course-list" class="cell-input"></td>
+            <td><input type="text" list="course-list" class="cell-input"></td>
+            <td><input type="text" list="course-list" class="cell-input"></td>
+            <td><input type="text" list="course-list" class="cell-input"></td>
           </tr>
           <tr>
             <td>晚间<br>19:00<br>|<br>22:00</td>
-            <td><input type="text" list="course-list" placeholder="..............."></td>
-            <td><input type="text" list="course-list" placeholder="..............."></td>
-            <td><input type="text" list="course-list" placeholder="..............."></td>
-            <td><input type="text" list="course-list" placeholder="..............."></td>
-            <td><input type="text" list="course-list" placeholder="..............."></td>
-            <td><input type="text" list="course-list" placeholder="..............."></td>
-            <td><input type="text" list="course-list" placeholder="..............."></td>
+            <td><input type="text" list="course-list" class="cell-input"></td>
+            <td><input type="text" list="course-list" class="cell-input"></td>
+            <td><input type="text" list="course-list" class="cell-input"></td>
+            <td><input type="text" list="course-list" class="cell-input"></td>
+            <td><input type="text" list="course-list" class="cell-input"></td>
+            <td><input type="text" list="course-list" class="cell-input"></td>
+            <td><input type="text" list="course-list" class="cell-input"></td>
           </tr>
           <tr style="background: rgba(0,0,0,0.03);">
             <td>深夜<br>23:00<br>|<br>03:00</td>
-            <td><input type="text" list="course-list" placeholder="灵界观测记录"></td>
-            <td><input type="text" list="course-list" placeholder="灵界观测记录"></td>
-            <td><input type="text" list="course-list" placeholder="灵界观测记录"></td>
-            <td><input type="text" list="course-list" placeholder="灵界观测记录"></td>
-            <td><input type="text" list="course-list" placeholder="灵界观测记录"></td>
-            <td><input type="text" list="course-list" placeholder="灵界观测记录"></td>
-            <td><input type="text" list="course-list" placeholder="灵界观测记录"></td>
+            <td><input type="text" list="course-list" class="cell-input"></td>
+            <td><input type="text" list="course-list" class="cell-input"></td>
+            <td><input type="text" list="course-list" class="cell-input"></td>
+            <td><input type="text" list="course-list" class="cell-input"></td>
+            <td><input type="text" list="course-list" class="cell-input"></td>
+            <td><input type="text" list="course-list" class="cell-input"></td>
+            <td><input type="text" list="course-list" class="cell-input"></td>
           </tr>
         </tbody>
       </table>
@@ -655,39 +680,47 @@
     let currentActiveTabId = "general"; // 默认为总表
     const timeSlots = ['morning', 'afternoon', 'evening', 'midnight'];
 
-    // 根据输入内容的字数（全角半角权重）动态计算并缩小字体，以防止内容溢出被截断
-    function adjustInputFontSize(element) {
-      const val = element.value;
-      let weight = 0;
-      for(let i=0; i<val.length; i++) {
-        // 中文字符因为宽所以权重大约为2，英文字母大约为1
-        weight += val.charCodeAt(i) > 255 ? 2 : 1;
-      }
-
-      // 根据计算权重决定字号。标准字号为 1.4rem。
-      if (weight <= 8) {
-        element.style.fontSize = '1.4rem';
-        element.style.letterSpacing = '1px';
-      } else if (weight <= 12) {
-        element.style.fontSize = '1.25rem';
-        element.style.letterSpacing = '0px';
-      } else if (weight <= 16) {
-        element.style.fontSize = '1.1rem';
-        element.style.letterSpacing = '0px';
-      } else if (weight <= 20) {
-        element.style.fontSize = '0.9rem';
-        element.style.letterSpacing = '0px';
+    // 格式化单元格展示，空时显示点状占位符，有内容时移除 empty 类
+    function updateCellDisplay(div, input) {
+      const val = input.value.trim();
+      if (val === '') {
+        div.innerText = '...............';
+        div.classList.add('empty');
       } else {
-        element.style.fontSize = '0.8rem';
-        element.style.letterSpacing = '0px';
+        div.innerText = val;
+        div.classList.remove('empty');
       }
     }
 
     document.addEventListener("DOMContentLoaded", () => {
-      // 绑定表单输入框的动态字体缩放事件
-      document.querySelectorAll('td input').forEach(input => {
-        input.addEventListener('input', function() {
-          adjustInputFontSize(this);
+
+      // --- 关键交互：为表格输入框构建“展示(分行)”与“编辑(单行下拉)”分离机制 ---
+      document.querySelectorAll('tbody td').forEach(td => {
+        const input = td.querySelector('input.cell-input');
+        if (!input) return;
+
+        // 动态创建一个用作渲染自动分行的展示 div
+        const div = document.createElement('div');
+        div.className = 'cell-display';
+        td.insertBefore(div, input);
+
+        // 默认状态下隐藏原生 input，由 div 负责显示文字并负责换行
+        input.style.display = 'none';
+        updateCellDisplay(div, input);
+
+        // 当用户点击格子时，隐藏 div，显示原生 input 并使其快速获取焦点以便可唤出下拉菜单
+        div.onclick = () => {
+          div.style.display = 'none';
+          input.style.display = 'block';
+          input.focus();
+        };
+
+        // 当原生 input 丢失焦点时，把输入数据同步回 div，恢复分行显示状态
+        input.addEventListener('blur', () => {
+          updateCellDisplay(div, input);
+          div.style.display = 'flex';
+          input.style.display = 'none';
+          saveCurrentInputsToMemory(); // 离开焦点时即刻顺便存入临时变量
         });
       });
 
@@ -762,7 +795,7 @@
 
         tabEl.onclick = () => {
           if(currentActiveTabId === tabId) return;
-          saveCurrentInputsToMemory(); // 切换前保留用户手打记录
+          saveCurrentInputsToMemory(); // 切换前保留用户手中可能敲了一半的记录
           currentActiveTabId = tabId;
           refreshScheduleUI();
         };
@@ -778,7 +811,7 @@
     function saveCurrentInputsToMemory() {
       const targetData = globalSchedules[currentActiveTabId].data;
       timeSlots.forEach((timeSlot, i) => {
-        const rowInputs = document.querySelectorAll(`tbody tr:nth-child(${i+1}) input`);
+        const rowInputs = document.querySelectorAll(`tbody tr:nth-child(${i+1}) input.cell-input`);
         rowInputs.forEach((input, j) => {
           targetData[timeSlot][j] = input.value;
         });
@@ -808,12 +841,20 @@
         }
       });
 
-      // 刷新填入对应的空
+      // 刷新填入对应的空，并触发展示div重绘
       timeSlots.forEach((timeSlot, i) => {
-        const rowInputs = document.querySelectorAll(`tbody tr:nth-child(${i+1}) input`);
+        const rowTr = document.querySelector(`tbody tr:nth-child(${i+1})`);
+        const rowInputs = rowTr.querySelectorAll(`input.cell-input`);
+        const rowDivs = rowTr.querySelectorAll(`.cell-display`);
+
         rowInputs.forEach((input, j) => {
           input.value = activeData.data[timeSlot][j] || "";
-          adjustInputFontSize(input); // 更新文本后重新判断是否需要缩小字体
+          input.style.display = 'none'; // 确保在切换时藏好编辑框
+          // 同步给对应的展示层并显示
+          if(rowDivs[j]) {
+            updateCellDisplay(rowDivs[j], input);
+            rowDivs[j].style.display = 'flex';
+          }
         });
       });
     }
@@ -821,7 +862,7 @@
     // 小助手函数：通过透明蒙版效果让未选中的书签颜色稍微偏暗，从而凸显当前页
     function adjustColorDarken(hex) {
       if (!hex.startsWith('#')) return hex;
-      return hex; // 若需明显差异，也可在此直接混合深色方案，当前设计使用 box-shadow 已有层级感
+      return hex;
     }
 
     // 弹出桌上的卷宗详情界面
