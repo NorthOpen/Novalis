@@ -84,8 +84,8 @@
     "1": {
       "photo": "photo1.jpg",
       "name": "常攸宁",
-      "desc": "特招新生",
-      "bg": "失色旧学 | 中国",
+      "desc": "选拔制",
+      "bg": "失色旧血 | 中国",
       "stats": {"STR": 16, "DEX": 12, "CON": 15, "INT": 10, "WIS": 14, "CHA": 8},
       "inventory": [
         "",
@@ -102,7 +102,7 @@
     "2": {
       "photo": "photo2.jpg",
       "name": "尤拉莉",
-      "desc": "二年级生",
+      "desc": "选拔制",
       "bg": "求知若渴 | 法国",
       "stats": {"STR": 10, "DEX": 14, "CON": 12, "INT": 16, "WIS": 10, "CHA": 12},
       "inventory": [
@@ -120,7 +120,7 @@
     "3": {
       "photo": "photo3.jpg",
       "name": "法提赫",
-      "desc": "三年级生",
+      "desc": "选拔制",
       "bg": "失色旧血 | 土耳其",
       "stats": {"STR": 8, "DEX": 10, "CON": 9, "INT": 18, "WIS": 12, "CHA": 15},
       "inventory": [
@@ -133,7 +133,7 @@
     "4": {
       "photo": "photo4.jpg",
       "name": "丹碧斯",
-      "desc": "一年级",
+      "desc": "选拔制",
       "bg": "因信称义 | 北欧",
       "stats": {"STR": 9, "DEX": 11, "CON": 10, "INT": 15, "WIS": 16, "CHA": 10},
       "inventory": [
