@@ -603,7 +603,7 @@
     <div class="stain" style="bottom: 30%; left: 5%; width: 50px; height: 60px; background: rgba(0,0,100,0.05);"></div>
 
     <h1 id="paper-title">诺瓦利斯大学：学生标准日程表</h1>
-    <div style="text-align: center; font-size: 0.9rem; margin-bottom: 20px; font-family: var(--typewriter);">表单编号: NOV-SD-81C | 填写请使用指定黑色或蓝色墨水笔</div>
+    <div style="text-align: center; font-size: 0.9rem; margin-bottom: 20px; font-family: var(--typewriter);">表单编号: NOV-DS-81M | 填写请使用指定黑色或蓝色墨水笔</div>
 
     <datalist id="course-list">
       <!-- 列表将由 data.json 自动载入 -->
@@ -668,8 +668,8 @@
       </table>
 
       <div style="text-align: center;">
-        <button class="btn-submit" onclick="alert('档案归档通知\n\n服务测试中，于此页面的更改不会登记入册，请联系学院管理部线下更改。')">
-          [ 为当前活页暂存记录 ]
+        <button type="button" class="btn-submit" onclick="exportCurrentTabSchedule()">
+          [ 为当前活页生成归档 (导出 JSON) ]
         </button>
       </div>
     </form>
@@ -941,6 +941,48 @@
 
     function closeModal() {
       document.getElementById('char-modal').style.display = 'none';
+    }
+
+    // ----------------------------------------------------
+    // --- 供玩家导出此页变动的独立 JSON 文件（以便发给后台或教务处管理员）
+    // ----------------------------------------------------
+    function exportCurrentTabSchedule() {
+      // 1. 保存当下所有可能还没丢焦点的输入内容
+      saveCurrentInputsToMemory();
+
+      const tabId = currentActiveTabId;
+      const tabData = globalSchedules[tabId];
+
+      // 2. 将导出的结构精简为仅包含这一页的日程表数据，以与 data.json 的 schedules 下的结构直接保持一致
+      const exportJsonFormat = {
+        schedules: {
+          [tabId]: {
+            tabName: tabData.tabName,
+            tabColor: tabData.tabColor,
+            data: tabData.data
+          }
+        }
+      };
+
+      // 3. 将对象转换为格式良好的 缩进 JSON 字符串格式
+      const jsonString = JSON.stringify(exportJsonFormat, null, 2);
+
+      // 4. 将其封装成 Blob 并借由临时链接唤出下载弹窗
+      const blob = new Blob([jsonString], { type: "application/json;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `诺瓦利斯更新档案_${tabData.tabName}.json`;
+
+      // 模拟点击触发下载
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      // 5. 告知玩家
+      alert(`【归档完成，文件已生成下载】\n\n关于 ${tabData.tabName} 的日程更新已经被转换成了名为“${link.download}”的独立数据片段了！\n\n请把你下载的这页日志发送给你们辛苦的 DM（教务处管理员）进行手动同步进后台总合集 data.json 里~`);
     }
   </script>
 </body>
