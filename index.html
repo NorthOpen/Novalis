@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <title>诺瓦利斯标准日程记录系统 - 档案本</title>
+  <title>诺瓦利斯标准日程记录档案</title>
 
   <!-- 打字机体 -->
   <link href="https://fontsapi.zeoseven.com/2103/main/result.css" onload="this.rel='stylesheet'" rel="preload" as="style" crossorigin />
@@ -603,7 +603,7 @@
     <div class="stain" style="bottom: 30%; left: 5%; width: 50px; height: 60px; background: rgba(0,0,100,0.05);"></div>
 
     <h1 id="paper-title">诺瓦利斯大学：学生标准日程表</h1>
-    <div style="text-align: center; font-size: 0.9rem; margin-bottom: 20px; font-family: var(--typewriter);">表单编号: NOV-DS-81M | 填写请使用指定黑色或蓝色墨水笔</div>
+    <div style="text-align: center; font-size: 0.9rem; margin-bottom: 20px; font-family: var(--typewriter);">表单编号: NOV-SD-C | 填写请使用指定黑色或蓝色墨水笔</div>
 
     <datalist id="course-list">
       <!-- 列表将由 data.json 自动载入 -->
@@ -669,7 +669,7 @@
 
       <div style="text-align: center;">
         <button type="button" class="btn-submit" onclick="exportCurrentTabSchedule()">
-          [ 为当前活页生成归档 (导出 JSON) ]
+          [ 为当前活页生成归档 ]
         </button>
       </div>
     </form>
@@ -982,7 +982,7 @@
       URL.revokeObjectURL(url);
 
       // 5. 告知玩家
-      alert(`【归档完成，文件已生成下载】\n\n关于 ${tabData.tabName} 的日程更新已经被转换成了名为“${link.download}”的独立数据片段了！\n\n请把你下载的这页日志发送给你们辛苦的 DM（教务处管理员）进行手动同步进后台总合集 data.json 里~`);
+      alert(`【归档完成，文件已生成下载】\n\n关于 ${tabData.tabName} 的日程更新已经被转换成了名为“${link.download}”的数据片段。\n\n请把你下载的这页日志发送给你们的教务处管理员进行手动同步。`);
     }
   </script>
 </body>
