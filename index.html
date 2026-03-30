@@ -152,75 +152,113 @@
       border-bottom: 1px dotted var(--ink-blue);
     }
 
-    /* 两侧斜体档案夹标签拟物 */
+    /* ----- 两侧档案袋装潢设定 (Hover显露) ----- */
     .character-tab {
       position: fixed;
-      width: 130px;
+      width: 280px; /* 大尺寸以容纳真实照片和待办列表 */
       background-color: var(--folder-bg);
       border: 1px solid #bba573;
-      border-radius: 5px 20px 20px 5px;
-      box-shadow: 3px 3px 8px rgba(0,0,0,0.4);
-      padding: 15px 10px;
+      box-shadow: 6px 6px 15px rgba(0,0,0,0.4), inset 0 0 20px rgba(0,0,0,0.05);
+      padding: 20px;
       cursor: pointer;
       z-index: 100;
-      transition: transform 0.3s ease-out;
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.25);
       font-family: var(--typewriter);
-      background-image: linear-gradient(120deg, transparent 90%, rgba(255,255,255,0.4) 100%);
+      /* 纸质纹理 */
+      background-image:
+        linear-gradient(120deg, transparent 90%, rgba(255,255,255,0.4) 100%),
+        radial-gradient(circle at 10% 20%, rgba(0,0,0,0.02) 0%, transparent 40%);
     }
 
-    .character-tab.left {
-      left: -20px;
-      transform: rotate(3deg);
-      border-left: none;
-      box-shadow: 4px 4px 6px rgba(0,0,0,0.3);
-    }
-    .character-tab.left:hover {
-      transform: rotate(0deg) translateX(20px);
-    }
-
-    .character-tab.right {
-      right: -20px;
-      transform: rotate(-3deg);
-      border-radius: 20px 5px 5px 20px;
-      border-right: none;
-      box-shadow: -4px 4px 6px rgba(0,0,0,0.3);
-    }
-    .character-tab.right:hover {
-      transform: rotate(0deg) translateX(-20px);
+    /* 照片别针 */
+    .tab-clip {
+      position: absolute;
+      top: -12px;
+      width: 12px; height: 35px;
+      border: 2px solid silver;
+      border-radius: 8px;
+      border-color: #eee #888 #888 #ccc;
+      box-shadow: 2px 2px 3px rgba(0,0,0,0.4);
+      z-index: 5;
     }
 
-    .tab-1 { top: 12%; }
-    .tab-2 { top: 52%; }
-    .tab-3 { top: 12%; }
-    .tab-4 { top: 52%; }
-
-    .tab-photo {
-      width: 40px;
-      height: 40px;
-      margin: 0 auto 5px auto;
-      border: 2px solid #fff;
-      box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
-      background: #ccc;
-      transform: rotate(-5deg);
-      text-align: center;
-      line-height: 40px;
-      font-size: 1.2rem;
+    /* 档案袋上的真实拍立得照片 */
+    .tab-photo-img {
+      width: 80px;
+      height: 100px;
+      object-fit: cover;
+      border: 3px solid #fff;
+      border-bottom: 25px solid #fff; /* 模拟拍立得下部留白 */
+      box-shadow: 2px 2px 6px rgba(0,0,0,0.5);
+      background-color: #ddd;
+      margin-bottom: 10px;
+      position: relative;
     }
 
     .tab-name {
-      font-size: 1.1rem;
+      font-size: 1.3rem;
       font-weight: bold;
-      text-align: center;
-      margin-bottom: 2px;
       color: #111;
+      border-bottom: 2px solid #555;
+      padding-bottom: 5px;
+      margin-bottom: 5px;
     }
 
     .tab-desc {
-      font-size: 0.8rem;
-      text-align: center;
+      font-size: 0.9rem;
       color: #444;
       font-style: italic;
     }
+
+    .tab-todo {
+      margin-top: 15px;
+      font-family: var(--handwriting);
+      color: var(--ink-blue);
+      font-size: 1.2rem;
+    }
+    .tab-todo-title {
+      font-family: var(--typewriter);
+      font-size: 0.8rem;
+      color: #666;
+      border-bottom: 1px dashed rgba(0,0,0,0.2);
+      margin-bottom: 5px;
+    }
+    .tab-todo ul {
+      margin: 0; padding: 0; list-style: none;
+    }
+    .tab-todo li { margin-bottom: 4px; line-height: 1.2; position: relative;}
+    .tab-todo li::before { content: "- "; }
+
+    /* 左侧档案袋隐藏与出现逻辑 */
+    .character-tab.left {
+      left: -230px; /* 藏起大部分，仅露出边缘和照片一角 */
+      transform: rotate(3deg);
+      border-radius: 5px 15px 15px 5px;
+      border-left: none;
+    }
+    .character-tab.left:hover {
+      transform: rotate(0deg) translateX(230px);
+    }
+    .character-tab.left .tab-photo-img { float: right; margin-left:15px; transform: rotate(5deg); }
+    .character-tab.left .tab-clip { right: 50px; }
+
+    /* 右侧档案袋隐藏与出现逻辑 */
+    .character-tab.right {
+      right: -230px;
+      transform: rotate(-3deg);
+      border-radius: 15px 5px 5px 15px;
+      border-right: none;
+    }
+    .character-tab.right:hover {
+      transform: rotate(0deg) translateX(-230px);
+    }
+    .character-tab.right .tab-photo-img { float: left; margin-right:15px; transform: rotate(-5deg); }
+    .character-tab.right .tab-clip { left: 50px; }
+
+    .tab-1 { top: 5%; }
+    .tab-2 { top: 50%; }
+    .tab-3 { top: 5%; }
+    .tab-4 { top: 50%; }
 
     /* 弹出界面: 桌上的卷宗文件夹 */
     .modal-overlay {
@@ -247,7 +285,6 @@
         radial-gradient(circle at 20% 80%, rgba(0,0,0,0.02) 0%, transparent 40%);
     }
 
-    /* 文件夹左侧的装订线拟物 */
     .modal-content::before {
       content: "";
       position: absolute;
@@ -257,12 +294,11 @@
       border-left: 1px dashed rgba(0,0,0,0.2);
     }
 
-    /* 附着在卷宗上的照片/回形针 */
     .clip {
       position: absolute;
       top: -15px; left: 50%;
       width: 15px; height: 40px;
-      border: 3px solid #silver;
+      border: 3px solid silver;
       border-radius: 10px;
       background: transparent;
       box-shadow: 2px 2px 2px rgba(0,0,0,0.3);
@@ -306,7 +342,6 @@
       gap: 10px;
       margin: 20px 0 30px 0;
     }
-
     .stat-box {
       border: 1px solid #777;
       text-align: center;
@@ -314,7 +349,6 @@
       position: relative;
       background: rgba(255,255,255,0.3);
     }
-
     .stat-name { font-size: 0.8rem; border-bottom: 1px solid #777; padding-bottom: 5px; color: #333;}
     .stat-val { font-size: 1.6rem; font-weight: bold; margin-top: 5px; font-family: var(--typewriter); color: var(--ink-blue);}
 
@@ -322,7 +356,6 @@
       margin-top: 15px;
       padding-left: 20px;
     }
-
     .list-section h3 {
       font-size: 1.2rem;
       margin-bottom: 5px;
@@ -331,8 +364,6 @@
       padding: 2px 8px;
       transform: skew(-10deg);
     }
-
-    /* 手写体列表 */
     .list-section ul {
       margin: 0;
       padding-left: 20px;
@@ -341,14 +372,12 @@
       color: var(--ink-blue);
       list-style-type: none;
     }
-
     .list-section ul li { margin-bottom: 5px; position: relative; }
     .list-section ul li::before {
       content: "—";
       position: absolute;
       left: -20px;
     }
-
     .todo-list li::before {
       content: "☐";
       font-family: var(--typewriter);
@@ -380,7 +409,6 @@
       box-shadow: 0px 0px 0px #000;
     }
 
-    /* 纸张污渍表现 */
     .stain {
       position: absolute;
       width: 100px; height: 100px;
@@ -389,10 +417,14 @@
       pointer-events: none;
       z-index: 5;
     }
-
     .stain-coffee {
       box-shadow: inset 0 0 10px rgba(100, 50, 20, 0.3);
       border: 2px solid rgba(139, 69, 19, 0.2);
+    }
+
+    /* 提示占位图片未上传的样式覆盖 */
+    .tab-photo-img:not([src]), .tab-photo-img[src=""] {
+       visibility: hidden;
     }
   </style>
 </head>
@@ -405,34 +437,55 @@
   <div class="stain stain-coffee" style="top: -20px; right: -20px; transform: scale(1.5);"></div>
   <div class="stain" style="bottom: 30%; left: 5%; width: 50px; height: 60px; background: rgba(0,0,100,0.05);"></div>
 
-  <!-- 两侧文件夹组件预占位 -->
+  <!-- 两侧带有本地照片与待办的真实档案袋 -->
   <div class="character-tab left tab-1" onclick="openModal(1)">
-    <div class="tab-photo"></div>
+    <div class="tab-clip"></div>
+    <img class="tab-photo-img" src="" alt="Photo" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'80\' height=\'100\'><rect width=\'100%\' height=\'100%\' fill=\'%23ccc\'/><text x=\'50%\' y=\'50%\' fill=\'%23555\' text-anchor=\'middle\' font-size=\'12\'>需贴照片</text></svg>'">
     <div class="tab-name"></div>
     <div class="tab-desc"></div>
+    <div class="tab-todo">
+      <div class="tab-todo-title">▼ 随笔待办清单</div>
+      <ul></ul>
+    </div>
   </div>
 
   <div class="character-tab left tab-2" onclick="openModal(2)">
-    <div class="tab-photo"></div>
+    <div class="tab-clip"></div>
+    <img class="tab-photo-img" src="" alt="Photo" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'80\' height=\'100\'><rect width=\'100%\' height=\'100%\' fill=\'%23ccc\'/><text x=\'50%\' y=\'50%\' fill=\'%23555\' text-anchor=\'middle\' font-size=\'12\'>需贴照片</text></svg>'">
     <div class="tab-name"></div>
     <div class="tab-desc"></div>
+    <div class="tab-todo">
+      <div class="tab-todo-title">▼ 随笔待办清单</div>
+      <ul></ul>
+    </div>
   </div>
 
   <div class="character-tab right tab-3" onclick="openModal(3)">
-    <div class="tab-photo"></div>
+    <div class="tab-clip"></div>
+    <img class="tab-photo-img" src="" alt="Photo" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'80\' height=\'100\'><rect width=\'100%\' height=\'100%\' fill=\'%23ccc\'/><text x=\'50%\' y=\'50%\' fill=\'%23555\' text-anchor=\'middle\' font-size=\'12\'>需贴照片</text></svg>'">
     <div class="tab-name"></div>
     <div class="tab-desc"></div>
+    <div class="tab-todo">
+      <div class="tab-todo-title">▼ 随笔待办清单</div>
+      <ul></ul>
+    </div>
   </div>
 
   <div class="character-tab right tab-4" onclick="openModal(4)">
-    <div class="tab-photo"></div>
+    <div class="tab-clip"></div>
+    <img class="tab-photo-img" src="" alt="Photo" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'80\' height=\'100\'><rect width=\'100%\' height=\'100%\' fill=\'%23ccc\'/><text x=\'50%\' y=\'50%\' fill=\'%23555\' text-anchor=\'middle\' font-size=\'12\'>需贴照片</text></svg>'">
     <div class="tab-name"></div>
     <div class="tab-desc"></div>
+    <div class="tab-todo">
+      <div class="tab-todo-title">▼ 随笔待办清单</div>
+      <ul></ul>
+    </div>
   </div>
 
   <div class="container">
-    <div class="doodle" style="top: 30px; left: 50px; font-size: 2rem; transform: rotate(-10deg);">记得去教务处盖章！</div>
-    <div class="doodle" style="bottom: 20px; right: 60px; font-size: 1.5rem; transform: rotate(5deg);">周三下课后去工坊拿工具...</div>
+    <!-- 动态载入的随机涂鸦 -->
+    <div class="doodle doodle-1" style="top: 30px; left: 50px; font-size: 2rem; transform: rotate(-10deg);"></div>
+    <div class="doodle doodle-2" style="bottom: 20px; right: 60px; font-size: 1.5rem; transform: rotate(5deg);"></div>
 
     <h1>诺瓦利斯大学：学生标准日程表</h1>
     <div style="text-align: center; font-size: 0.9rem; margin-bottom: 20px; font-family: var(--typewriter);">表单编号: NOV-DS-81M | 填写请使用指定黑色或蓝色墨水笔</div>
@@ -488,13 +541,13 @@
           </tr>
           <tr style="background: rgba(0,0,0,0.03);">
             <td>深夜<br>23:00<br>|<br>03:00</td>
-            <td><input type="text" list="course-list" placeholder="灵界观测记录"></td>
-            <td><input type="text" list="course-list" placeholder="灵界观测记录"></td>
-            <td><input type="text" list="course-list" placeholder="灵界观测记录"></td>
-            <td><input type="text" list="course-list" placeholder="灵界观测记录"></td>
-            <td><input type="text" list="course-list" placeholder="灵界观测记录"></td>
-            <td><input type="text" list="course-list" placeholder="灵界观测记录"></td>
-            <td><input type="text" list="course-list" placeholder="灵界观测记录"></td>
+            <td><input type="text" list="course-list" placeholder=".............."></td>
+            <td><input type="text" list="course-list" placeholder=".............."></td>
+            <td><input type="text" list="course-list" placeholder=".............."></td>
+            <td><input type="text" list="course-list" placeholder=".............."></td>
+            <td><input type="text" list="course-list" placeholder=".............."></td>
+            <td><input type="text" list="course-list" placeholder=".............."></td>
+            <td><input type="text" list="course-list" placeholder=".............."></td>
           </tr>
         </tbody>
       </table>
@@ -507,10 +560,9 @@
     </form>
   </div>
 
-  <!-- 桌面上的卷宗 (Modal) -->
+  <!-- 桌面上的卷宗展开界面 (Modal) -->
   <div id="char-modal" class="modal-overlay" onclick="if(event.target==this) closeModal()">
     <div class="modal-content">
-      <!-- 回形针拟物 -->
       <div class="clip"></div>
       <div class="close-btn" onclick="closeModal()">X</div>
 
@@ -547,17 +599,22 @@
   </div>
 
   <script>
-    // 在页面加载时自动从 data.json 读取各项信息
     document.addEventListener("DOMContentLoaded", () => {
       fetch('data.json')
         .then(response => {
-          if (!response.ok) {
-            throw new Error('网络响应错误，可能是因为跨域问题');
-          }
+          if (!response.ok) throw new Error('网络响应错误');
           return response.json();
         })
         .then(data => {
-          // 1. 载入预设课程下拉列表
+          // --- 0. 载入动态页面涂鸦碎碎念 ---
+          if (data.doodles && data.doodles.length > 0) {
+            // 洗牌算法乱序并抽取两个
+            let shuffledDoodles = [...data.doodles].sort(() => 0.5 - Math.random());
+            document.querySelector('.doodle-1').innerText = shuffledDoodles[0] || '';
+            document.querySelector('.doodle-2').innerText = shuffledDoodles[1] || '';
+          }
+
+          // --- 1. 载入预设课程下拉列表 ---
           const courseList = document.getElementById('course-list');
           courseList.innerHTML = '';
           data.courseList.forEach(course => {
@@ -566,10 +623,9 @@
             courseList.appendChild(option);
           });
 
-          // 2. 载入用户日程表内容填入表格矩阵
+          // --- 2. 载入用户日程表内容填入表格 ---
           const timeSlots = ['morning', 'afternoon', 'evening', 'midnight'];
           timeSlots.forEach((timeSlot, i) => {
-            // 获取该时段对应的行里的所有 input
             const rowInputs = document.querySelectorAll(`tbody tr:nth-child(${i+1}) input`);
             const slotData = data.schedule[timeSlot];
             if (slotData) {
@@ -581,38 +637,46 @@
             }
           });
 
-          // 3. 载入并绘制角色标签卡
+          // --- 3. 载入两侧边缘夹带的实体档案袋视图 ---
           window.characterData = data.characters;
           [1, 2, 3, 4].forEach(id => {
             const cData = data.characters[id];
             const tab = document.querySelector(`.tab-${id}`);
             if (tab && cData) {
-              tab.querySelector('.tab-photo').innerText = cData.photo;
+              // 绑定本地真实照片（若无照片或出错会有替代效果）
+              tab.querySelector('.tab-photo-img').src = cData.photo;
               tab.querySelector('.tab-name').innerText = cData.name;
               tab.querySelector('.tab-desc').innerText = cData.desc;
+
+              // 在档案袋封面显示手写的待办部分内容
+              const todoUl = tab.querySelector('.tab-todo ul');
+              todoUl.innerHTML = '';
+              (cData.todo || []).forEach(item => {
+                 const li = document.createElement('li');
+                 li.innerText = item;
+                 todoUl.appendChild(li);
+              });
             }
           });
         })
         .catch(err => {
-          console.error("读取 data.json 失败！\n在本地直接双击打开HTML（即 file:// 协议）时，浏览器出于安全策略会禁止读取本地JSON文件。\n建议使用 VS Code 的 Live Server 扩展，或者任意本地HTTP服务器启动此页面。", err);
-          alert("无法读取 data.json 配置文件，请确保您是在本地服务器环境（如 Live Server）下启动网页；如果您是直接双击打开的，安全策略拦截了配置文件的读取。");
+          console.error("读取错误: ", err);
+          alert("无法读取 data.json。这通常是因为双击运行引起的跨域加载限制，请通过Live Server等本地服务器打开。");
         });
     });
 
-    // 弹出对应的角色档案详情
+    // 弹出桌上的卷宗详情界面
     function openModal(id) {
-      if (!window.characterData) return; // 如果JSON尚未读取成功则跳过
+      if (!window.characterData) return;
 
       const data = window.characterData[id];
       document.getElementById('modal-name').innerText = data.name;
       document.getElementById('modal-bg').innerText = data.bg;
 
-      // 导入六大属性
       ['STR', 'DEX', 'CON', 'INT', 'WIS', 'CHA'].forEach(stat => {
         document.getElementById('stat-' + stat).innerText = data.stats[stat];
       });
 
-      // 导入背包物品
       const invList = document.getElementById('modal-inventory');
       invList.innerHTML = '';
       data.inventory.forEach(item => {
@@ -621,15 +685,14 @@
         invList.appendChild(li);
       });
 
-      // 导入代办事项
       const todoList = document.getElementById('modal-todo');
       todoList.innerHTML = '';
       data.todo.forEach(item => {
         const li = document.createElement('li');
         li.innerText = item;
-        // 增加一点拟物效果：点击todo复选框可以打钩
         li.style.cursor = "pointer";
-        li.onclick = function() {
+        li.onclick = function(e) {
+          e.stopPropagation(); // 阻止击穿穿透导致关闭弹窗
           this.classList.toggle("done");
         };
         todoList.appendChild(li);
@@ -638,7 +701,6 @@
       document.getElementById('char-modal').style.display = 'flex';
     }
 
-    // 关闭档案面板
     function closeModal() {
       document.getElementById('char-modal').style.display = 'none';
     }
