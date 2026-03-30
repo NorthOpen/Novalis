@@ -86,7 +86,7 @@
       "name": "常攸宁",
       "desc": "选拔制",
       "bg": "失色旧血 | 中国",
-      "stats": {"STR": 16, "DEX": 12, "CON": 15, "INT": 10, "WIS": 14, "CHA": 8},
+      "stats": {"STR": 11, "DEX": 10, "CON": 11, "INT": 12, "WIS": 15, "CHA": 13},
       "inventory": [
         "",
         "",
@@ -104,7 +104,7 @@
       "name": "尤拉莉",
       "desc": "选拔制",
       "bg": "求知若渴 | 法国",
-      "stats": {"STR": 10, "DEX": 14, "CON": 12, "INT": 16, "WIS": 10, "CHA": 12},
+      "stats": {"STR": 10, "DEX": 15, "CON": 10, "INT": 17, "WIS": 14, "CHA": 16},
       "inventory": [
         "",
         "",
@@ -122,7 +122,7 @@
       "name": "法提赫",
       "desc": "选拔制",
       "bg": "失色旧血 | 土耳其",
-      "stats": {"STR": 8, "DEX": 10, "CON": 9, "INT": 18, "WIS": 12, "CHA": 15},
+      "stats": {"STR": 17, "DEX": 9, "CON": 11, "INT": 18, "WIS": 8, "CHA": 16},
       "inventory": [
  
       ],
@@ -135,7 +135,7 @@
       "name": "丹碧斯",
       "desc": "选拔制",
       "bg": "因信称义 | 北欧",
-      "stats": {"STR": 9, "DEX": 11, "CON": 10, "INT": 15, "WIS": 16, "CHA": 10},
+      "stats": {"STR": 8, "DEX": 10, "CON": 12, "INT": 12, "WIS": 16, "CHA": 10},
       "inventory": [
 
       ],
