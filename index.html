@@ -68,7 +68,7 @@
       background: rgba(200, 100, 100, 0.2);
     }
 
-    /* --- 新增：活页夹分页突起标签 --- */
+    /* --- 活页夹分页突起标签 --- */
     .binder-tabs {
       position: absolute;
       top: -46px; /* 突起在纸张上方 */
@@ -155,11 +155,12 @@
       background: transparent;
       margin-left: 10px;
       box-shadow: inset 0 0 10px rgba(0,0,0,0.02);
+      table-layout: fixed; /* 强制表格列宽固定，避免因文字撑开而变形 */
     }
 
     th, td {
       border: 1px solid rgba(0,0,0,0.4);
-      padding: 12px 8px;
+      padding: 12px 4px;
       text-align: center;
       position: relative;
     }
@@ -176,25 +177,31 @@
       white-space: nowrap;
     }
 
-    /* 手写输入框 */
+    /* 手写输入框 - 智能缩小机制 */
     input {
       background: transparent;
       border: none;
       color: var(--ink-blue);
       font-family: var(--handwriting);
       font-size: 1.4rem;
-      width: 90%;
+      width: 100%;
+      box-sizing: border-box;
       text-align: center;
       letter-spacing: 1px;
+      text-overflow: ellipsis; /* 溢出时显示省略号 */
+      white-space: nowrap;
+      transition: font-size 0.2s, letter-spacing 0.2s; /* 字体缩小的平滑过渡 */
     }
     input::placeholder {
       color: rgba(0, 0, 0, 0.2);
       font-family: var(--typewriter);
       font-size: 0.9rem;
+      letter-spacing: 2px;
     }
     input:focus {
       outline: none;
       border-bottom: 1px dotted var(--ink-blue);
+      /* 当获取焦点时，如果字太小也可以暂时放大方便修改，或者保持不动 */
     }
 
     /* 两侧斜体档案夹标签拟物 */
@@ -544,13 +551,13 @@
         <thead>
           <tr>
             <th style="width: 10%;">时间带</th>
-            <th style="width: 12.8%;">周一 (Mon)</th>
-            <th style="width: 12.8%;">周二 (Tue)</th>
-            <th style="width: 12.8%;">周三 (Wed)</th>
-            <th style="width: 12.8%;">周四 (Thu)</th>
-            <th style="width: 12.8%;">周五 (Fri)</th>
-            <th style="width: 12.8%;">周六 (Sat)</th>
-            <th style="width: 12.8%;">周日 (Sun)</th>
+            <th style="width: 12.8%;">周一(Mon)</th>
+            <th style="width: 12.8%;">周二(Tue)</th>
+            <th style="width: 12.8%;">周三(Wed)</th>
+            <th style="width: 12.8%;">周四(Thu)</th>
+            <th style="width: 12.8%;">周五(Fri)</th>
+            <th style="width: 12.8%;">周六(Sat)</th>
+            <th style="width: 12.8%;">周日(Sun)</th>
           </tr>
         </thead>
         <tbody>
@@ -648,7 +655,42 @@
     let currentActiveTabId = "general"; // 默认为总表
     const timeSlots = ['morning', 'afternoon', 'evening', 'midnight'];
 
+    // 根据输入内容的字数（全角半角权重）动态计算并缩小字体，以防止内容溢出被截断
+    function adjustInputFontSize(element) {
+      const val = element.value;
+      let weight = 0;
+      for(let i=0; i<val.length; i++) {
+        // 中文字符因为宽所以权重大约为2，英文字母大约为1
+        weight += val.charCodeAt(i) > 255 ? 2 : 1;
+      }
+
+      // 根据计算权重决定字号。标准字号为 1.4rem。
+      if (weight <= 8) {
+        element.style.fontSize = '1.4rem';
+        element.style.letterSpacing = '1px';
+      } else if (weight <= 12) {
+        element.style.fontSize = '1.25rem';
+        element.style.letterSpacing = '0px';
+      } else if (weight <= 16) {
+        element.style.fontSize = '1.1rem';
+        element.style.letterSpacing = '0px';
+      } else if (weight <= 20) {
+        element.style.fontSize = '0.9rem';
+        element.style.letterSpacing = '0px';
+      } else {
+        element.style.fontSize = '0.8rem';
+        element.style.letterSpacing = '0px';
+      }
+    }
+
     document.addEventListener("DOMContentLoaded", () => {
+      // 绑定表单输入框的动态字体缩放事件
+      document.querySelectorAll('td input').forEach(input => {
+        input.addEventListener('input', function() {
+          adjustInputFontSize(this);
+        });
+      });
+
       fetch('data.json')
         .then(response => {
           if (!response.ok) throw new Error('网络响应错误');
@@ -732,7 +774,7 @@
       refreshScheduleUI();
     }
 
-    // 将用户临时敲入的修改塞进全避变量，这样切页面回来就不会丢
+    // 将用户临时敲入的修改塞进全局变量，这样切页面回来就不会丢
     function saveCurrentInputsToMemory() {
       const targetData = globalSchedules[currentActiveTabId].data;
       timeSlots.forEach((timeSlot, i) => {
@@ -771,6 +813,7 @@
         const rowInputs = document.querySelectorAll(`tbody tr:nth-child(${i+1}) input`);
         rowInputs.forEach((input, j) => {
           input.value = activeData.data[timeSlot][j] || "";
+          adjustInputFontSize(input); // 更新文本后重新判断是否需要缩小字体
         });
       });
     }
